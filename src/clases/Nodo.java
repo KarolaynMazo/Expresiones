@@ -11,9 +11,11 @@ package clases;
  */
 public class Nodo {
     String expresion;
+    Nodo liga; 
 
     public Nodo(String expresion) {
         this.expresion = expresion;
+        this.liga=null;
     }
 
     public String getExpresion() {
@@ -23,6 +25,15 @@ public class Nodo {
     public void setExpresion(String expresion) {
         this.expresion = expresion;
     }
+
+    public Nodo getLiga() {
+        return liga;
+    }
+
+    public void setLiga(Nodo liga) {
+        this.liga = liga;
+    }
+    
     
     
     
