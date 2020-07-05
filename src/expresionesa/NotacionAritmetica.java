@@ -14,6 +14,7 @@ import modelo.Pila;
 public class NotacionAritmetica {
     
     /**
+     * Punto 1. Literal a y b
      * El método recibe una expresión aritmética en notación infija y devuelve
      * su equivalente en notación prefija.
      * 
@@ -93,6 +94,7 @@ public class NotacionAritmetica {
     }
     
     /**
+     * Punto 2.
      * El método recibe una expresión aritmética en notación prefija y devuelve
      * el resultado númerico de evaluar dicha expresión.
      * 
@@ -137,6 +139,8 @@ public class NotacionAritmetica {
         
         return Double.parseDouble(pila.getTope().getDato());
     }
+    
+    /*Metodos privados*/
     
     private static Pila obtenerPilaDeExpresion(String expresionInfija, boolean evaluarExpresion){
         if(evaluarExpresion == false){
@@ -193,10 +197,10 @@ public class NotacionAritmetica {
         expresionInfija = expresionInfija.replace(" ", "");
         boolean operadoresResueltos = false;
         boolean operadoresAdyacentes = false;
-        StringBuilder sb = new StringBuilder();
+        String sb = "";
         
         while(operadoresResueltos == false){
-            sb = new StringBuilder();
+            sb = "";
             operadoresAdyacentes = false;
             
             for (int i = 0; i < expresionInfija.length(); i++) {
@@ -208,38 +212,38 @@ public class NotacionAritmetica {
                         operadoresAdyacentes = true;
             
                         if(dato1.equals("-") && dato2.equals("+")){
-                            sb.append("-");
+                            sb += "-";
                         }
 
                         if(dato1.equals("+") && dato2.equals("-")){
-                            sb.append("-");
+                            sb += "-";
                         }
 
                         if(dato1.equals("+") && dato2.equals("+")){
-                            sb.append("+");
+                            sb += "+";
                         }
 
                         if(dato1.equals("-") && dato2.equals("-")){
-                            sb.append("+");
+                            sb += "+";
                         }
 
                         i = i + 1;
                     }else{
-                        sb.append(expresionInfija.charAt(i));
+                        sb += expresionInfija.charAt(i);
                     }
                 }else{
-                    sb.append(expresionInfija.charAt(i));
+                    sb += expresionInfija.charAt(i);
                 }
             }
             
             if(operadoresAdyacentes){
-                expresionInfija = sb.toString();
+                expresionInfija = sb;
             }else{
                 operadoresResueltos = true;
             }
         }
         
-        return sb.toString();
+        return sb;
     }
     
     private static int obtenerPrecedencia(char elemento) {
