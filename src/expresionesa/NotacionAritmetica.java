@@ -13,9 +13,13 @@ import modelo.Pila;
  */
 public class NotacionAritmetica {
     
-    /* El metodo recibe una expresion aritmetica en notacion infija y devulve el 
-    equivalente en notacion prefija
-    */
+    /**
+     * El método recibe una expresión aritmética en notación infija y devuelve
+     * su equivalente en notación prefija.
+     * 
+     * @param expresionInfija Expresión aritmética en notación infija.
+     * @return Expresión aritmética en notación prefija.
+     */
     public static String convertirInfijaAPrefija(String expresionInfija){
         Pila pilaInfija = obtenerPilaDeExpresion(expresionInfija, false);
 
@@ -88,74 +92,13 @@ public class NotacionAritmetica {
         return pilaPrefija.toString().replace(")", "");
     }
     
-    public static String convertirInfijaAPrefija_(String expresionInfija){
-        Pila pilaInfija = obtenerPilaDeExpresion(expresionInfija, false);
-
-        Pila pilaPrefija = new Pila();
-        Pila pilaTemporal = new Pila();
-        String dato = "";
-        while(pilaInfija.estaVacia() == false){
-            dato = pilaInfija.desapilar().getDato();
-            
-            if(esDatoNumerico(dato)){
-                pilaPrefija.apilar(dato);
-            }else{
-                if(dato.equals(")")){
-                    pilaTemporal.apilar(dato);
-                }
-                
-                if(esOperador(dato)){
-                    if(pilaTemporal.estaVacia()){
-                        pilaTemporal.apilar(dato);
-                        continue;
-                    }
-                    
-                    if(obtenerPrecedencia(dato.charAt(0)) == 
-                       obtenerPrecedencia(pilaTemporal.getTope().getDato().charAt(0))){
-                        pilaTemporal.apilar(dato);
-                        continue;
-                    }
-                    
-                    if(obtenerPrecedencia(pilaTemporal.getTope().getDato().charAt(0)) < 
-                            obtenerPrecedencia(dato.charAt(0))){
-                        pilaTemporal.apilar(dato);
-                        continue;
-                    }
-                    
-                    if( pilaTemporal.estaVacia() == false){
-                        
-                        while(pilaTemporal.estaVacia() == false){
-                            int precedenciaOperadorPilaTemporal = obtenerPrecedencia(pilaTemporal.getTope().getDato().charAt(0));
-                            int precedenciaOperador = obtenerPrecedencia(dato.charAt(0));
-                            
-                            if(precedenciaOperadorPilaTemporal > precedenciaOperador){
-                                pilaPrefija.apilar(pilaTemporal.desapilar().getDato());
-                            }
-                        }
-                        
-                        pilaTemporal.apilar(dato);
-                        continue;
-                    }
-                }
-                
-                if(dato.equals("(")){
-                    pilaPrefija.apilar(pilaTemporal.desapilar().getDato());
-                    
-                    if(pilaInfija.getTope().getDato().equals(")")){
-                        pilaInfija.desapilar();
-                    }
-                }
-                
-            }
-        }
-        
-        while(pilaTemporal.estaVacia() == false){
-            pilaPrefija.apilar(pilaTemporal.desapilar().getDato());
-        }
-        
-        return pilaPrefija.toString();
-    }
-    
+    /**
+     * El método recibe una expresión aritmética en notación prefija y devuelve
+     * el resultado númerico de evaluar dicha expresión.
+     * 
+     * @param expresionPrefija Expresión aritmética en notación prefija.
+     * @return Resultado de evaluar la expresión en notación prefija.
+     */
     public static double evaluarPrefija(String expresionPrefija){
         Pila pilaPrefija = obtenerPilaDeExpresion(expresionPrefija, true);
         Pila pila = new Pila();
@@ -208,7 +151,8 @@ public class NotacionAritmetica {
             
             if(i == 1){
                 if(esOperador(String.valueOf(digito)) && 
-                    expresionInfija.charAt(i) == expresionInfija.charAt(i-1)){
+                    expresionInfija.charAt(i) == expresionInfija.charAt(i-1) &&
+                    digito == '-'){
                     dato = dato + expresionInfija.charAt(i);
                     continue;
                 }
@@ -296,36 +240,6 @@ public class NotacionAritmetica {
         }
         
         return sb.toString();
-    }
-    
-    private static Pila obtenerPilaDeExpresion_(String expresionInfija){
-        Pila pilaInfija = new Pila();
-        
-        String dato = "";
-        
-        for (int i = 0; i < expresionInfija.length(); i++) {
-            char digito = expresionInfija.charAt(i);
-            if(esCaracterNumero(digito)){
-                dato = dato + digito;
-                continue;
-            }
-            
-            if(digito == '.'){
-                dato = dato + digito;
-                continue;
-            }
-            
-            pilaInfija.apilar(dato);
-            dato = "";
-            
-            pilaInfija.apilar(String.valueOf(digito));
-        }
-        
-        if(dato.equals("") == false){
-            pilaInfija.apilar(dato);
-        }
-        
-        return pilaInfija;
     }
     
     private static int obtenerPrecedencia(char elemento) {

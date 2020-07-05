@@ -31,9 +31,17 @@ public class ExpresionesA {
         System.out.println(prefija4);
         System.out.println(NotacionAritmetica.evaluarPrefija(prefija4));
         
-        String prefija5 = NotacionAritmetica.convertirInfijaAPrefija("(2 - -8 + 3 / 2)");
+        String prefija5 = NotacionAritmetica.convertirInfijaAPrefija("(2 -   -8 + 3 / 2)");
         System.out.println(prefija5);
         System.out.println(NotacionAritmetica.evaluarPrefija(prefija5));
+        
+        try{
+            String op = NotacionAritmetica.convertirInfijaAPrefija("$%++345");
+            Double op2 = NotacionAritmetica.evaluarPrefija(op);
+            System.out.println(op2);
+        }catch(Exception e){
+            System.out.println("La operación no está escrita correcta");
+        }
     }
     
 }
