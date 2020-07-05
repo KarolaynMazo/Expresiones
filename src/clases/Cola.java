@@ -25,7 +25,7 @@ public class Cola {
 
     }
 
-    public void encolar(String expresion) {
+    public void encolar(char expresion) {
         Nodo c, r, ult = null;
         c = new Nodo(expresion);
         if (punta == null) {
@@ -51,7 +51,7 @@ public class Cola {
         else
         {
             e = punta;
-            g = e.getExpresion();
+            g= Character.toString(e.getExpresion());
             if (e.getLiga() == null) {
                 punta = null;
             } else {

@@ -10,19 +10,19 @@ package clases;
  * @author kamaida
  */
 public class Nodo {
-    String expresion;
+    char expresion;
     Nodo liga; 
 
-    public Nodo(String expresion) {
+    public Nodo(char expresion) {
         this.expresion = expresion;
         this.liga=null;
     }
 
-    public String getExpresion() {
+    public char getExpresion() {
         return expresion;
     }
 
-    public void setExpresion(String expresion) {
+    public void setExpresion(char expresion) {
         this.expresion = expresion;
     }
 

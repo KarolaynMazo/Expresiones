@@ -12,7 +12,12 @@ package clases;
 public class Pila {
 
     Nodo cabeza;
+    char cab;
+    
+     public Pila() {
+        cabeza = null;
 
+    }
     public Nodo getPunta() {
         return cabeza;
     }
@@ -21,32 +26,39 @@ public class Pila {
         this.cabeza = punta;
     }
 
-    public void insertar(String expresion) {
-        Nodo p;
+    public void apilar(char expresion) {
+       
         Nodo q = new Nodo(expresion);
         if (cabeza == null) {
             q.setLiga(null);
             cabeza = q;
+            cab= q.getExpresion();
         } else {
-            p = cabeza;
+           
 
             q.setLiga(cabeza);
             cabeza = q;
+            cab=q.expresion;
         }
 
     }
 
-    public String extraer() {
-        String d = cabeza.getExpresion();
+    public char desapilar() {
+        char c;
+        Nodo D; 
+       // char d = cabeza.getExpresion();
+        char e = 0; 
         if (cabeza == null) {
-            System.out.println("La lista esta vacia");
-            return " ";
+            System.out.println("La pila esta vacia");
+            return e;
         } else {
-
+             c=cabeza.getExpresion();
+              D= new Nodo(c);
             cabeza = cabeza.getLiga();
+          //  c=cabeza.getExpresion();
 
         }
-        return d;
+        return D.getExpresion();
     }
 
     public void mostrar() {
