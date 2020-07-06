@@ -23,14 +23,14 @@ public class Pila {
     }
 
     public Nodo desapilar(){
-        Nodo nodoDesapilado = null;
+        Nodo Desapilado = null;
         
         if(!estaVacia()){
-            nodoDesapilado = cabeza;
-            cabeza = nodoDesapilado.getLiga();
+            Desapilado = cabeza;
+            cabeza = Desapilado.getLiga();
         }
         
-        return nodoDesapilado;
+        return Desapilado;
     }
 
     public void imprimir(){
@@ -39,13 +39,13 @@ public class Pila {
     
     @Override
     public String toString(){
-        StringBuilder sb = new StringBuilder();
+        String sb = new String();
         Nodo dato = cabeza;
         while(dato != null){
-            sb.append(dato.getDato());
+            sb += dato.getDato();
             dato = dato.getLiga();
         }
         
-        return sb.toString();
+        return sb;
     }
 }

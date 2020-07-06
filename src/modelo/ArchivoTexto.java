@@ -3,16 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package expresionesa;
+package modelo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-/**
- *
- * @author Andrés Laverde
- */
+
 public class ArchivoTexto {
     public static String leerTexto(String rutaArchivo){
       StringBuilder sb = new StringBuilder();
