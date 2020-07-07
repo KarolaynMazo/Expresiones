@@ -18,23 +18,21 @@ public class NotacionAritmetica {
      */
     public static String convertirInfijaAPrefija(String expresionInfija){
         String dato = "";
-        Pila pInfija = obtPilaExpresion(expresionInfija, false);
         Pila pPrefija = new Pila();
         Pila pilaAuxiliar = new Pila();
+        Pila pInfija = obtPila(expresionInfija, false);
       
-        while(pInfija.estaVacia() == false){
+        while(pInfija.getCabeza() != null){
             dato = pInfija.desapilar().getDato();
             
-            if(esOperandoNumerico(dato)){
-                pPrefija.apilar(dato);
-            }else{
-                if(pilaAuxiliar.estaVacia()){
+            if(esOperandoNumerico(dato) == false){
+                if(pilaAuxiliar.getCabeza() == null){
                     pilaAuxiliar.apilar(dato);
                     continue;
                 }
                 
-                int origenDato = obtenerOrigen(dato.charAt(0));
-                int origenCabezaAuxiliar = obtenerOrigen(pilaAuxiliar.getTope().getDato().charAt(0));
+                int origenDato = jerarquia(dato.charAt(0));
+                int origenCabezaAuxiliar = jerarquia(pilaAuxiliar.getCabeza().getDato().charAt(0));
                 
                 if(dato.equals(")") || dato.equals("(")){
                     if(dato.equals(")")){
@@ -42,8 +40,8 @@ public class NotacionAritmetica {
                     }else{
                         boolean parar = false;
                         
-                        while(pilaAuxiliar.estaVacia() == false && parar == false){
-                            if(pilaAuxiliar.getTope().getDato().equals(")")){
+                        while(pilaAuxiliar.getCabeza() != null && parar == false){
+                            if(pilaAuxiliar.getCabeza().getDato().equals(")")){
                                 pilaAuxiliar.desapilar();
                                 parar = true;
                             }else{
@@ -52,20 +50,20 @@ public class NotacionAritmetica {
                         }
                     }
                 }else{
-                    if(pilaAuxiliar.getTope().getDato().equals(")")){
+                    if(pilaAuxiliar.getCabeza().getDato().equals(")")){
                         pilaAuxiliar.apilar(dato);
                     }else{
                         if(origenDato >= origenCabezaAuxiliar){
                             pilaAuxiliar.apilar(dato);
                         }else{
                             boolean parar = false;
-                            while(pilaAuxiliar.estaVacia() == false && parar == false){
-                                origenCabezaAuxiliar = obtenerOrigen(pilaAuxiliar.getTope().getDato().charAt(0));
+                            while(pilaAuxiliar.getCabeza() != null && parar == false){
+                                origenCabezaAuxiliar = jerarquia(pilaAuxiliar.getCabeza().getDato().charAt(0));
                                 
                                 if(origenCabezaAuxiliar > origenDato){
                                     pPrefija.apilar(pilaAuxiliar.desapilar().getDato());
                                     
-                                    if(pilaAuxiliar.estaVacia()){
+                                    if(pilaAuxiliar.getCabeza() == null){
                                         pilaAuxiliar.apilar(dato);
                                         parar = true;
                                     }
@@ -78,14 +76,19 @@ public class NotacionAritmetica {
                     }
                 }
                 
+            }else{
+                pPrefija.apilar(dato);
             }
         }
         
-        while(pilaAuxiliar.estaVacia() == false){
+        while(pilaAuxiliar.getCabeza() != null){
             pPrefija.apilar(pilaAuxiliar.desapilar().getDato());
         }
         
-        return pPrefija.toString().replace(")", "");
+        String expresionPrefija = pPrefija.pilaTexto();
+        expresionPrefija = expresionPrefija.replace(")", "");
+        
+        return expresionPrefija;
     }
     
     /**
@@ -98,51 +101,84 @@ public class NotacionAritmetica {
      */
     public static double evaluarPrefija(String expresionPrefija){
         Pila p = new Pila();
-        Pila pPrefijo = obtPilaExpresion(expresionPrefija, true);
+        Pila pPrefijo = obtPila(expresionPrefija, true);
        
         
-        while(pPrefijo.estaVacia() == false){
-            String dato = pPrefijo.desapilar().getDato();
+        while(pPrefijo.getCabeza() != null){
+            String token = pPrefijo.desapilar().getDato();
             
-            if(esOperandoNumerico(dato)){
-                p.apilar(dato);
-            }else{
+            if(esOperandoNumerico(token) == false){
                 double num1 = Double.parseDouble(p.desapilar().getDato());
                 double num2 = Double.parseDouble(p.desapilar().getDato());
-                // el segun caso, esta diseñado con base a la prioridad de simbolos
                 
-                switch (dato.charAt(0)) { 
-                case '^': 
-                    p.apilar(String.valueOf(Math.pow(num1, num2))); 
-                    break;
-                case '*': 
-                    p.apilar(String.valueOf(num1 * num2)); 
-                    break; 
-                case '/': 
-                    p.apilar(String.valueOf(num1 / num2)); 
-                    break; 
-                case '%': 
-                    p.apilar(String.valueOf(num1 % num2)); 
-                    break;
-                case '+': 
-                    p.apilar(String.valueOf(num1 + num2)); 
-                    break; 
-                case '-': 
-                    p.apilar(String.valueOf(num1 - num2)); 
-                    break; 
-                
-                } 
+                p.apilar(calcular(num1, num2, ""+token.charAt(0)));
+            }else{
+                p.apilar(token);
             }
         }
         
-        return Double.parseDouble(p.getTope().getDato());
+        return Double.parseDouble(p.getCabeza().getDato());
     }
     
-    /*Metodos privados*/
+    private static String calcular(double numero1, double numero2, String operador){
+        double resultado = 0;
+        
+        if(operador.equals("+"))
+            resultado =  numero1 + numero2;
+        
+        if(operador.equals("-"))
+            resultado = numero1 - numero2;
+        
+        if(operador.equals("*"))
+            resultado = numero1 * numero2;
+        
+        if(operador.equals("/"))
+            resultado = numero1 / numero2;
+        
+        if(operador.equals("^"))
+            resultado = Math.pow(numero1, numero2);
+        
+        if(operador.equals("%"))
+            resultado = numero1 % numero2;
+
+        return resultado + "";
+    }
     
-    private static Pila obtPilaExpresion(String expresionInfija, boolean valoraExpresion){
+    private static Pila obtPila(String expresionInfija, boolean valoraExpresion){
         if(valoraExpresion == false){
-            expresionInfija = ejecucionOperadores(expresionInfija);
+            boolean operadorSiguiente = false;
+            boolean signosOperados = false;
+            expresionInfija = expresionInfija.replace(" ", "");
+            String concatenador = "";
+
+            while(signosOperados == false){
+                concatenador = "";
+                operadorSiguiente = false;
+
+                for (int i = 0; i < expresionInfija.length(); i++) {
+                    if(i < expresionInfija.length()- 1){
+                        String operando1 = String.valueOf(expresionInfija.charAt(i));
+                        String operando2 = String.valueOf(expresionInfija.charAt(i+1));
+
+                        if(esOperador(operando1) && esOperador(operando2)){
+                            concatenador += leySignos(operando1, operando2);
+                            operadorSiguiente = true;
+
+                            i = i + 1;
+                        }else{
+                            concatenador += expresionInfija.charAt(i);
+                        }
+                    }else{
+                        concatenador += expresionInfija.charAt(i);
+                    }
+                }
+
+                if(operadorSiguiente){
+                    expresionInfija = concatenador;
+                }else{
+                    signosOperados = true;
+                }
+            }
         }
         Pila pilaInfija = new Pila();
         
@@ -160,7 +196,7 @@ public class NotacionAritmetica {
                 }
             }
             
-            if(esCharNumero(digito)){
+            if(esOperandoNumerico(""+digito)){
                 
                 if(i < expresionInfija.length() - 1){
                     if(expresionInfija.charAt(i + 1) == '.'){
@@ -191,99 +227,78 @@ public class NotacionAritmetica {
         return pilaInfija;
     }
     
-    private static String ejecucionOperadores(String expresionInfija){
-        expresionInfija = expresionInfija.replace(" ", "");
+    private static String leySignos(String operador1, String operador2){
         String concatenador = "";
-        boolean operadorSolucionado = false;
-        boolean operadorSiguiente = false;
-        
-        while(operadorSolucionado == false){
-            concatenador = "";
-            operadorSiguiente = false;
-            
-            for (int i = 0; i < expresionInfija.length(); i++) {
-                if(i < expresionInfija.length()- 1){
-                    String operando1 = String.valueOf(expresionInfija.charAt(i));
-                    String operando2 = String.valueOf(expresionInfija.charAt(i+1));
-                    
-                    if(esOperador(operando1) && esOperador(operando2)){
-                        operadorSiguiente = true;
-            
-                        if(operando1.equals("-") && operando2.equals("+")){
-                            concatenador += "-";
-                        }
+        if(operador1.equals("-") && operador2.equals("+")){
+            concatenador += "-";
+        }
 
-                        if(operando1.equals("+") && operando2.equals("-")){
-                            concatenador += "-";
-                        }
+        if(operador1.equals("+") && operador2.equals("-")){
+            concatenador += "-";
+        }
 
-                        if(operando1.equals("+") && operando2.equals("+")){
-                            concatenador += "+";
-                        }
+        if(operador1.equals("+") && operador2.equals("+")){
+            concatenador += "+";
+        }
 
-                        if(operando1.equals("-") && operando2.equals("-")){
-                            concatenador += "+";
-                        }
-
-                        i = i + 1;
-                    }else{
-                        concatenador += expresionInfija.charAt(i);
-                    }
-                }else{
-                    concatenador += expresionInfija.charAt(i);
-                }
-            }
-            
-            if(operadorSiguiente){
-                expresionInfija = concatenador;
-            }else{
-                operadorSolucionado = true;
-            }
+        if(operador1.equals("-") && operador2.equals("-")){
+            concatenador += "+";
         }
         
         return concatenador;
     }
     
-    private static int obtenerOrigen(char elemento) {
-        int respuesta = 0;
+    private static int jerarquia(char elemento) {
         switch (elemento) {
-        case ')': case '(':
-            respuesta = 4; break;
-        case '^':
-            respuesta = 3; break;
-        case '*': case '/': case '%':
-            respuesta = 2; break;
-        case '+': case '-':
-            respuesta = 1; break;
-
-        }
-        return respuesta;
-    }
-    
-    private static boolean esCharNumero(char dat){
-        if(dat >= 48 && dat <=57){
-            return true;
-        }
-        
-        return false;
-    }
-    
-    private static boolean esOperandoNumerico(String dat){
-        try{
-            double numero = Double.parseDouble(dat);
-            return true;
-        }catch(Exception e){
-            return false;
+            case '+': 
+                return 1; 
+            case '-':
+                return 1;
+            case '*': 
+                return 2; 
+            case '/': 
+                return 2;
+            case '%':
+                return 2;
+            case '^':
+                return 3; 
+            case ')': 
+                return 4; 
+            case '(':
+                return 4;
+            default:
+                return 0;
         }
     }
     
     private static boolean esOperador(String dat){
-        if(dat.equals("+") || dat.equals("-") 
-                || dat.equals("*") || dat.equals("/")
-                || dat.equals("%") || dat.equals("^")){
-            return true;
+        switch(dat){
+            case "+":
+                return true;
+            case "-":
+                return true;
+            case "*":
+                return true;
+            case "/":
+                return true;
+            case "^":
+                return true;
+            case "%":
+                return true;
+            default:
+                return false;
         }
-        
-        return false;
+    }
+    
+    public static boolean esOperandoNumerico(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }

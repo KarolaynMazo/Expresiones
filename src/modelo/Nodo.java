@@ -1,12 +1,12 @@
 package modelo;
 
 public class Nodo {
+    Nodo siguiente; 
     String dato;
-    Nodo liga; 
 
     public Nodo(String dato) {
         this.dato = dato;
-        this.liga=null;
+        this.siguiente=null;
     }
 
     public String getDato() {
@@ -17,11 +17,11 @@ public class Nodo {
         this.dato = dato;
     }
 
-    public Nodo getLiga() {
-        return liga;
+    public Nodo getSiguiente() {
+        return siguiente;
     }
 
-    public void setLiga(Nodo liga) {
-        this.liga = liga;
+    public void setSiguiente(Nodo liga) {
+        this.siguiente = liga;
     }
 }

@@ -4,48 +4,39 @@ public class Pila {
 
     Nodo cabeza = null;
 
-    public Nodo getTope() {
+    public Nodo getCabeza() {
         return cabeza;
     }
     
-    public boolean estaVacia(){
-        return cabeza == null;
-    }
-
     public void apilar(String dato) {
-        Nodo nuevoNodo = new Nodo(dato);
-        if (estaVacia()) {
-            cabeza = nuevoNodo;
+        Nodo nodo = new Nodo(dato);
+        if (cabeza == null) {
+            cabeza = nodo;
         } else {
-            nuevoNodo.setLiga(cabeza);
-            cabeza = nuevoNodo;
+            nodo.setSiguiente(cabeza);
+            cabeza = nodo;
         }
     }
 
     public Nodo desapilar(){
-        Nodo Desapilado = null;
+        Nodo nodoDesapilado = null;
         
-        if(!estaVacia()){
-            Desapilado = cabeza;
-            cabeza = Desapilado.getLiga();
+        if(cabeza != null){
+            nodoDesapilado = cabeza;
+            cabeza = nodoDesapilado.getSiguiente();
         }
         
-        return Desapilado;
+        return nodoDesapilado;
     }
 
-    public void imprimir(){
-        System.out.println(this.toString());
-    }
-    
-    @Override
-    public String toString(){
-        String sb = new String();
+    public String pilaTexto(){
         Nodo dato = cabeza;
+        String pilaTexto = "";
         while(dato != null){
-            sb += dato.getDato();
-            dato = dato.getLiga();
+            pilaTexto = pilaTexto + dato.getDato();
+            dato = dato.getSiguiente();
         }
         
-        return sb;
+        return pilaTexto;
     }
 }
